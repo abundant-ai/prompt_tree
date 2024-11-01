@@ -1,0 +1,40 @@
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model PromptChain {
+    id        String   @id @default(cuid())
+    name      String
+    createdAt DateTime @default(now())
+    nodes     Node[]
+    edges     Edge[]
+}
+
+model Node {
+    id        String      @id
+    chainId   String
+    chain     PromptChain @relation(fields: [chainId], references: [id], onDelete: Cascade)
+    parentId  String?
+    type      String
+    position  Json // {x: number, y: number}
+    text      String
+    analysis  String?
+    changes   Json // Change[]
+    feedback  Json // Feedback[]
+    createdAt DateTime
+}
+
+model Edge {
+    id      String      @id
+    chainId String
+    chain   PromptChain @relation(fields: [chainId], references: [id], onDelete: Cascade)
+    source  String
+    target  String
+}
