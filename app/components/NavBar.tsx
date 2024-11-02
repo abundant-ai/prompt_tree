@@ -3,7 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PencilIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  OrganizationSwitcher,
+} from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
 interface NavBarProps {
@@ -79,20 +85,40 @@ export function NavBar({
         )}
       </div>
       <div className="flex items-center gap-4">
-        <SignedIn>
-          <Link
-            href="/"
-            className="text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            All Chains
-          </Link>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
+        <Link
+          href="/"
+          className="text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          All Chains
+        </Link>
         <SignedOut>
           <Button variant="outline" size="sm">
             <SignInButton />
           </Button>
         </SignedOut>
+        <SignedIn>
+          <OrganizationSwitcher
+            hidePersonal
+            afterCreateOrganizationUrl="/"
+            afterLeaveOrganizationUrl="/"
+            afterSelectOrganizationUrl="/"
+            appearance={{
+              elements: {
+                rootBox: "flex items-center gap-2",
+                organizationSwitcherTrigger:
+                  "flex items-center gap-2 rounded-md px-3 py-2 hover:bg-gray-100",
+              },
+            }}
+          />
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "h-8 w-8",
+              },
+            }}
+          />
+        </SignedIn>
       </div>
     </nav>
   );

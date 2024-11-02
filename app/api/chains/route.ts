@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { SaveChainParams, ChainNode, DBEdge as Edge } from "@/app/services/db";
 import { v4 as uuidv4 } from "uuid";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request: Request) {
   try {
@@ -10,6 +11,12 @@ export async function POST(request: Request) {
       nodeCount: chainData.nodes.length,
       edgeCount: chainData.edges.length,
     });
+
+    const { userId, orgId } = await auth();
+
+    if (!userId || !orgId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // Create a map of old IDs to new IDs
     const idMapping: { [key: string]: string } = {};
@@ -30,6 +37,8 @@ export async function POST(request: Request) {
       changes: JSON.stringify(node.data.changes),
       feedback: JSON.stringify(node.data.feedback),
       createdAt: node.data.createdAt,
+      userId,
+      orgId,
     }));
 
     // Update edges with new IDs
@@ -37,6 +46,8 @@ export async function POST(request: Request) {
       id: uuidv4(),
       source: idMapping[edge.source],
       target: idMapping[edge.target],
+      userId,
+      orgId,
     }));
 
     console.info("Creating chain with processed data:", {
@@ -53,6 +64,8 @@ export async function POST(request: Request) {
         edges: {
           create: edgesWithNewIds,
         },
+        userId,
+        orgId,
       },
       include: {
         nodes: true,
@@ -90,6 +103,19 @@ export async function PUT(request: Request) {
     const { id, name, nodes, edges } = await request.json();
     console.info("Updating chain:", { id, nodeCount: nodes.length });
 
+    const { userId, orgId } = await auth();
+    if (!userId || !orgId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    // Check if any nodes belong to a different org
+    const existingNodes = await prisma.node.findMany({
+      where: { id: { in: nodes.map((n: ChainNode) => n.id) } },
+    });
+
+    if (existingNodes.some((node) => node.orgId !== orgId)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // Create a map of old IDs to new IDs
     const idMapping: { [key: string]: string } = {};
 
@@ -109,6 +135,8 @@ export async function PUT(request: Request) {
       changes: JSON.stringify(node.data.changes),
       feedback: JSON.stringify(node.data.feedback),
       createdAt: node.data.createdAt,
+      userId,
+      orgId,
     }));
 
     // Update edges with new IDs
@@ -116,6 +144,8 @@ export async function PUT(request: Request) {
       id: uuidv4(),
       source: idMapping[edge.source],
       target: idMapping[edge.target],
+      userId,
+      orgId,
     }));
 
     const result = await prisma.promptChain.update({
@@ -130,6 +160,8 @@ export async function PUT(request: Request) {
           deleteMany: {},
           create: edgesWithNewIds,
         },
+        userId,
+        orgId,
       },
       include: {
         nodes: true,
@@ -163,7 +195,14 @@ export async function PUT(request: Request) {
 
 export async function GET() {
   try {
+    const { userId, orgId } = await auth();
+
+    if (!userId || !orgId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const chains = await prisma.promptChain.findMany({
+      where: { orgId },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,

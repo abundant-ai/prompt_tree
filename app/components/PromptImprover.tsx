@@ -9,7 +9,7 @@ import { saveChain, deleteChain } from "../services/db";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { NavBar } from "./NavBar";
+// import { NavBar } from "./NavBar";
 import InitialPromptForm from "./prompt-improver/InitialPromptForm";
 import { HeaderActions } from "./prompt-improver/HeaderActions";
 import { FlowCanvas } from "./prompt-improver/FlowCanvas";
@@ -103,7 +103,7 @@ export default function PromptImprover({
   }, [nodes]);
 
   const saveChainToDb = useCallback(
-    async (forceName: boolean = false, customName?: string) => {
+    async (customName?: string) => {
       try {
         console.info("Starting chain save process", {
           totalNodesBeforeTraversal: nodes.length,
@@ -531,21 +531,21 @@ export default function PromptImprover({
     }
   };
 
-  const handleUpdateChainName = useCallback(
-    async (newName: string) => {
-      if (!chainId) return;
+  // const handleUpdateChainName = useCallback(
+  //   async (newName: string) => {
+  //     if (!chainId) return;
 
-      try {
-        await saveChainToDb(false, newName);
-        setChainName(newName);
-        toast.success("Chain name updated");
-      } catch (error) {
-        toast.error("Failed to update chain name");
-        console.error("Error updating chain name:", error);
-      }
-    },
-    [chainId, saveChainToDb]
-  );
+  //     try {
+  //       await saveChainToDb(newName);
+  //       setChainName(newName);
+  //       toast.success("Chain name updated");
+  //     } catch (error) {
+  //       toast.error("Failed to update chain name");
+  //       console.error("Error updating chain name:", error);
+  //     }
+  //   },
+  //   [chainId, saveChainToDb]
+  // );
 
   // Add effect to set initial chain name
   useEffect(() => {
@@ -556,11 +556,11 @@ export default function PromptImprover({
 
   return (
     <div className="h-screen w-full flex flex-col">
-      <NavBar
+      {/* <NavBar
         chainName={chainName}
         onUpdateChainName={handleUpdateChainName}
         isEditing={nodes.length > 0}
-      />
+      /> */}
       {nodes.length === 0 ? (
         <InitialPromptForm onSubmit={createInitialNode} />
       ) : (

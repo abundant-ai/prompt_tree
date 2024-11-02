@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const { userId, orgId } = await auth();
+  if (!userId || !orgId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const chain = await prisma.promptChain.findUnique({
-      where: { id: params.id },
+      where: { id: params.id, orgId },
       include: {
         nodes: true,
         edges: true,
@@ -32,9 +38,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const { userId, orgId } = await auth();
+  if (!userId || !orgId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await prisma.promptChain.delete({
-      where: { id: params.id },
+      where: { id: params.id, orgId },
     });
 
     return NextResponse.json({ success: true });
