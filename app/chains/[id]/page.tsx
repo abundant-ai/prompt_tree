@@ -6,7 +6,7 @@ import { Node, Edge } from "reactflow";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import PromptImprover from "@/app/components/PromptImprover";
-import { loadChain } from "@/app/services/db";
+import { loadChain } from "@/lib/db";
 import { PromptNode } from "@/app/types/types";
 
 interface Chain {
