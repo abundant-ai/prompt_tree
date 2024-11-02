@@ -11,6 +11,7 @@ import {
   OrganizationSwitcher,
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import Logo from "@/app/logo";
 
 interface NavBarProps {
   chainName?: string;
@@ -42,7 +43,9 @@ export function NavBar({
     <nav className="bg-white border-b px-4 py-3 flex items-center justify-between">
       <div className="flex items-center gap-8">
         <Link href="/" className="text-xl font-bold text-gray-800">
-          Prompt Tree
+          <div className="w-8 h-8">
+            <Logo />
+          </div>
         </Link>
         {isEditing && (
           <div className="flex items-center gap-2">
