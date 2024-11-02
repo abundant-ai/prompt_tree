@@ -7,8 +7,8 @@ import {
   ChevronRight,
   Expand,
   Pencil,
-  Check,
-  X,
+  // Check,
+  // X,
   Trash2,
 } from "lucide-react";
 import { PromptNode as PromptNodeType } from "../types/types";
@@ -68,17 +68,17 @@ function PromptNode({ data, selected }: PromptNodeProps) {
     ...nodeData
   } = data;
 
-  const handleSaveEdit = () => {
-    if (onUpdatePrompt) {
-      onUpdatePrompt(editedText);
-    }
-    setIsEditing(false);
-  };
+  // const handleSaveEdit = () => {
+  //   if (onUpdatePrompt) {
+  //     onUpdatePrompt(editedText);
+  //   }
+  //   setIsEditing(false);
+  // };
 
-  const handleCancelEdit = () => {
-    setEditedText(nodeData.text);
-    setIsEditing(false);
-  };
+  // const handleCancelEdit = () => {
+  //   setEditedText(nodeData.text);
+  //   setIsEditing(false);
+  // };
 
   const handleNodeClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("button")) {
