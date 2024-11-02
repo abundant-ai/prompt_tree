@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { Node, Edge, useNodesState, useEdgesState } from "reactflow";
-import "reactflow/dist/style.css";
-import { PromptNode as PromptNodeType } from "../types/types";
-import { v4 as uuidv4 } from "uuid";
-import { saveChain, deleteChain } from "@/lib/db";
+import { deleteChain, saveChain } from "@/lib/db";
 import debounce from "lodash/debounce";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Edge, Node, useEdgesState, useNodesState } from "reactflow";
+import "reactflow/dist/style.css";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { PromptNode as PromptNodeType } from "../types/types";
 // import { NavBar } from "./NavBar";
-import InitialPromptForm from "./prompt-improver/InitialPromptForm";
-import { HeaderActions } from "./prompt-improver/HeaderActions";
 import { FlowCanvas } from "./prompt-improver/FlowCanvas";
-import { getLayoutedElements } from "./prompt-improver/utils";
+import { HeaderActions } from "./prompt-improver/HeaderActions";
+import InitialPromptForm from "./prompt-improver/InitialPromptForm";
 import { nodeTypes } from "./prompt-improver/nodeTypes";
+import { getLayoutedElements } from "./prompt-improver/utils";
 
 interface PromptImproverProps {
   metaprompt: string;
@@ -156,7 +156,7 @@ export default function PromptImprover({
                   .filter((n) => n.id !== allNodes[0].id)
                   .map((n) => ({
                     text: n.data.text,
-                    analysis: n.data.analysis || "",
+                    reasoning: n.data.reasoning || "",
                   })),
               }),
             });
@@ -441,19 +441,8 @@ export default function PromptImprover({
         data: {
           ...node.data,
           isLoading,
-          inheritedFeedback,
           onImprove: isSelected
             ? () => handleImprovePrompt(node.id)
-            : undefined,
-          onAddFeedback: isSelected ? () => addFeedback(node.id) : undefined,
-          onUpdateFeedback: isSelected
-            ? (feedbackId: string, text: string) => {
-                updateFeedback(node.id, feedbackId, text);
-                debouncedSave();
-              }
-            : undefined,
-          onRemoveFeedback: isSelected
-            ? (feedbackId: string) => removeFeedback(node.id, feedbackId)
             : undefined,
           onUpdatePrompt: isSelected
             ? (text: string) => {
@@ -506,10 +495,9 @@ export default function PromptImprover({
         data: {
           id: uuidv4(),
           text: prompt,
-          feedback: [],
-          analysis: "",
+          feedback: "",
+          reasoning: "",
           parentId: null,
-          changes: [],
           createdAt: new Date(),
         },
       };

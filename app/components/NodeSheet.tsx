@@ -1,34 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PromptNode as PromptNodeType } from "../types/types";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { Node } from "reactflow";
-import { PlusCircle, ChevronDown, ChevronRight, Trash2 } from "lucide-react";
+import { PromptNode as PromptNodeType } from "../types/types";
 import { Playground } from "./playground/Playground";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Textarea } from "@/components/ui/textarea";
 
 interface NodeSheetProps {
   node: Node<PromptNodeType> | null;
   onClose: () => void;
-  onAddFeedback?: () => void;
-  onUpdateFeedback?: (feedbackId: string, text: string) => void;
-  onRemoveFeedback?: (feedbackId: string) => void;
-  onUpdatePrompt?: (text: string) => void;
-  inheritedFeedback?: { id: string; text: string }[];
   isLoading?: boolean;
   isOpen?: boolean;
 }
@@ -36,10 +29,6 @@ interface NodeSheetProps {
 export function NodeSheet({
   node,
   onClose,
-  onAddFeedback,
-  onUpdateFeedback,
-  onRemoveFeedback,
-  inheritedFeedback = [],
   isLoading,
   isOpen = false,
 }: NodeSheetProps) {
@@ -81,72 +70,13 @@ export function NodeSheet({
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Feedback</CardTitle>
-                  {onAddFeedback && (
-                    <Button
-                      onClick={onAddFeedback}
-                      disabled={isLoading}
-                      size="sm"
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Add Feedback
-                    </Button>
-                  )}
                 </div>
               </CardHeader>
               <CardContent>
-                {inheritedFeedback.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-muted-foreground">
-                      Inherited Feedback
-                    </h4>
-                    {inheritedFeedback.map((feedback) => (
-                      <Card key={feedback.id}>
-                        <CardContent className="p-3">
-                          <p className="text-sm text-muted-foreground">
-                            {feedback.text}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-                {node.data.feedback && node.data.feedback.length > 0 && (
-                  <div className="space-y-2">
-                    {node.data.feedback.map((feedback) => (
-                      <Card key={feedback.id}>
-                        <CardContent className="p-3">
-                          {onUpdateFeedback ? (
-                            <div className="flex gap-3">
-                              <Textarea
-                                className="flex-1 min-h-[5rem]"
-                                placeholder="Enter your feedback"
-                                value={feedback.text}
-                                onChange={(e) =>
-                                  onUpdateFeedback(feedback.id, e.target.value)
-                                }
-                                disabled={isLoading}
-                              />
-                              {onRemoveFeedback && (
-                                <Button
-                                  variant="destructive"
-                                  size="icon"
-                                  onClick={() => onRemoveFeedback(feedback.id)}
-                                  disabled={isLoading}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                  <span className="sr-only">
-                                    Remove feedback
-                                  </span>
-                                </Button>
-                              )}
-                            </div>
-                          ) : (
-                            <p className="text-sm">{feedback.text}</p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                {node.data.feedback && (
+                  <p className="whitespace-pre-wrap text-sm">
+                    {node.data.feedback}
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -162,13 +92,13 @@ export function NodeSheet({
             </Card>
 
             {/* Analysis Section - Collapsible */}
-            {node.data.analysis && (
+            {node.data.reasoning && (
               <Collapsible>
                 <Card>
                   <CardHeader className="cursor-pointer">
                     <CollapsibleTrigger className="flex items-center justify-between w-full">
-                      <CardTitle>Analysis</CardTitle>
-                      {expandedSections.includes("analysis") ? (
+                      <CardTitle>Reasoning</CardTitle>
+                      {expandedSections.includes("reasoning") ? (
                         <ChevronDown className="h-4 w-4" />
                       ) : (
                         <ChevronRight className="h-4 w-4" />
@@ -178,44 +108,8 @@ export function NodeSheet({
                   <CollapsibleContent>
                     <CardContent>
                       <p className="whitespace-pre-wrap text-sm">
-                        {node.data.analysis}
+                        {node.data.reasoning}
                       </p>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Card>
-              </Collapsible>
-            )}
-
-            {/* Changes Section - Collapsible */}
-            {node.data.changes.length > 0 && (
-              <Collapsible>
-                <Card>
-                  <CardHeader className="cursor-pointer">
-                    <CollapsibleTrigger className="flex items-center justify-between w-full">
-                      <CardTitle>Changes</CardTitle>
-                      {expandedSections.includes("changes") ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </CollapsibleTrigger>
-                  </CardHeader>
-                  <CollapsibleContent>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        {node.data.changes.map((change, index) => (
-                          <li key={index} className="text-sm">
-                            <span className="font-medium">
-                              {change.description}
-                            </span>
-                            {change.rationale && (
-                              <p className="text-muted-foreground mt-1">
-                                {change.rationale}
-                              </p>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
                     </CardContent>
                   </CollapsibleContent>
                 </Card>

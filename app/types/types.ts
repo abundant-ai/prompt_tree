@@ -1,8 +1,3 @@
-export interface Feedback {
-  id: string;
-  text: string;
-}
-
 export interface Change {
   description: string;
   rationale: string;
@@ -12,10 +7,9 @@ export interface PromptNode {
   id: string;
   parentId: string | null;
   text: string;
-  analysis: string;
-  changes: Change[];
+  reasoning: string;
   createdAt: Date;
-  feedback: Feedback[];
+  feedback: string;
 }
 
 export interface PromptFlowNode {
