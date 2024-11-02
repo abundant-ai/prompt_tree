@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { SaveChainParams, ChainNode, DBEdge as Edge } from "@/app/services/db";
+import { SaveChainParams, ChainNode, DBEdge as Edge } from "@/lib/db";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
 

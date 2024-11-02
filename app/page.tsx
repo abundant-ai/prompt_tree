@@ -33,7 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pencil, Trash } from "lucide-react";
-import { listChains, deleteChain } from "./services/db";
+import { listChains, deleteChain } from "@/lib/db";
 
 interface Chain {
   id: string;

@@ -5,7 +5,7 @@ import { Node, Edge, useNodesState, useEdgesState } from "reactflow";
 import "reactflow/dist/style.css";
 import { PromptNode as PromptNodeType } from "../types/types";
 import { v4 as uuidv4 } from "uuid";
-import { saveChain, deleteChain } from "../services/db";
+import { saveChain, deleteChain } from "@/lib/db";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

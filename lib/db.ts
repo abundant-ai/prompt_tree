@@ -1,5 +1,5 @@
 import { Node, Edge } from "reactflow";
-import { PromptNode, Change, Feedback } from "../types/types";
+import { PromptNode, Change, Feedback } from "../app/types/types";
 import { JsonValue } from "@prisma/client/runtime/library";
 
 interface DBNode {
