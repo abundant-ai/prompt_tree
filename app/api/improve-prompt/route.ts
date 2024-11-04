@@ -4,6 +4,7 @@ import { PromptNode, GPTOption, Change } from "@/app/types/types";
 import { XMLParser } from "fast-xml-parser";
 import { v4 as uuidv4 } from "uuid";
 
+export const maxDuration = 300;
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
