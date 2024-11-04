@@ -1,8 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-export interface TextareaProps
+export interface TextareaProps // eslint-disable-line @typescript-eslint/no-empty-object-type
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -16,9 +16,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref}
         {...props}
       />
-    )
+    );
   }
-)
-Textarea.displayName = "Textarea"
+);
+Textarea.displayName = "Textarea";
 
-export { Textarea }
+export { Textarea };

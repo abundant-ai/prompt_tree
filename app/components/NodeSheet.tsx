@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PromptNode as PromptNodeType } from "../types/types";
 import { Node } from "reactflow";
-import { PlusCircle, ChevronDown, ChevronRight, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Playground } from "./playground/Playground";
 import {
   Collapsible,
@@ -43,17 +41,7 @@ export function NodeSheet({
   isLoading,
   isOpen = false,
 }: NodeSheetProps) {
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
-
   if (!node) return null;
-
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(section)
-        ? prev.filter((s) => s !== section)
-        : [...prev, section]
-    );
-  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -168,11 +156,6 @@ export function NodeSheet({
                   <CardHeader className="cursor-pointer">
                     <CollapsibleTrigger className="flex items-center justify-between w-full">
                       <CardTitle>Analysis</CardTitle>
-                      {expandedSections.includes("analysis") ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
                     </CollapsibleTrigger>
                   </CardHeader>
                   <CollapsibleContent>
@@ -193,11 +176,6 @@ export function NodeSheet({
                   <CardHeader className="cursor-pointer">
                     <CollapsibleTrigger className="flex items-center justify-between w-full">
                       <CardTitle>Changes</CardTitle>
-                      {expandedSections.includes("changes") ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
                     </CollapsibleTrigger>
                   </CardHeader>
                   <CollapsibleContent>

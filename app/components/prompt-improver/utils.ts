@@ -38,7 +38,7 @@ export function getLayoutedElements(nodes: Node<PromptNode>[], edges: Edge[]) {
   dagre.layout(dagreGraph);
 
   // Get positioned nodes with adjusted center point
-  let layoutedNodes = nodes.map((node) => {
+  const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
     return {
       ...node,
