@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,7 +17,6 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Node } from "reactflow";
 import { PromptNode as PromptNodeType } from "../types/types";
-import { PlusCircle, Trash2 } from "lucide-react";
 import { Playground } from "./playground/Playground";
 
 interface NodeSheetProps {
@@ -32,6 +31,8 @@ export function NodeSheet({
   isOpen = false,
 }: NodeSheetProps) {
   if (!node) return null;
+
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -119,6 +120,7 @@ export function NodeSheet({
                   </CardContent>
                 </Card>
               </Collapsible>
+            )}
             {/* Analysis Section - Collapsible */}
             {node.data.analysis && (
               <Collapsible>
