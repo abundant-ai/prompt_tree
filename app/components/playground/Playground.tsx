@@ -104,17 +104,6 @@ export function Playground({ prompt }: PlaygroundProps) {
     }
   };
 
-  const handleReset = () => {
-    setResponse("");
-    setModelParams({
-      temperature: 0.7,
-      maxTokens: 1000,
-      topP: 1,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-    });
-  };
-
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 hover:bg-accent rounded-lg">

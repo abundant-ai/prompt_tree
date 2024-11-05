@@ -39,7 +39,6 @@ interface PromptNodeProps {
   };
   isLoading?: boolean;
   onDeleteNode?: () => void;
-  onUpdatePrompt?: (text: string) => void;
   selected?: boolean;
 }
 
@@ -52,10 +51,8 @@ function PromptNode(props: PromptNodeProps) {
   const {
     isLoading,
     onDeleteNode,
-    onUpdatePrompt,
     selected,
     data,
-    ...nodeData
   } = props;
   
   const handleNodeClick = (e: React.MouseEvent) => {
@@ -181,7 +178,6 @@ function PromptNode(props: PromptNodeProps) {
           type: "promptNode",
         }}
         onClose={() => setIsSheetOpen(false)}
-        isLoading={isLoading}
         isOpen={isSheetOpen}
       />
 

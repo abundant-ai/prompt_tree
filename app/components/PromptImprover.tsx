@@ -424,18 +424,6 @@ export default function PromptImprover({
       // Don't allow deleting the root node
       const canDelete = node.data.parentId !== null;
 
-      // Get parent node's feedback if it exists
-      const parentNode = node.data.parentId
-        ? nodes.find((n) => n.id === node.data.parentId)
-        : null;
-
-      const inheritedFeedback = parentNode
-        ? [
-            ...parentNode.data.feedback,
-            ...(parentNode.data.inheritedFeedback || []),
-          ]
-        : [];
-
       return {
         ...node,
         data: {

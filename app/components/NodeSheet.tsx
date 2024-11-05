@@ -22,14 +22,12 @@ import { Playground } from "./playground/Playground";
 interface NodeSheetProps {
   node: Node<PromptNodeType> | null;
   onClose: () => void;
-  isLoading?: boolean;
   isOpen?: boolean;
 }
 
 export function NodeSheet({
   node,
   onClose,
-  isLoading,
   isOpen = false,
 }: NodeSheetProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);

@@ -1,6 +1,6 @@
-import { Node, Edge } from "reactflow";
-import dagre from "dagre";
 import { PromptNode } from "@/app/types/types";
+import dagre from "dagre";
+import { Edge, Node } from "reactflow";
 
 // Adjusted dimensions and spacing
 export const NODE_WIDTH = 600; // Much wider for better text display
@@ -38,7 +38,7 @@ export function getLayoutedElements(nodes: Node<PromptNode>[], edges: Edge[]) {
   dagre.layout(dagreGraph);
 
   // Get positioned nodes with adjusted center point
-  let layoutedNodes = nodes.map((node) => {
+  const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
     return {
       ...node,

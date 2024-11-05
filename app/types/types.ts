@@ -1,3 +1,8 @@
+export interface Feedback {
+  id: string;
+  text: string;
+}
+
 export interface Change {
   description: string;
   rationale: string;
