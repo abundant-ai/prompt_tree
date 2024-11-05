@@ -88,18 +88,18 @@ export function NavBar({
         )}
       </div>
       <div className="flex items-center gap-4">
-        <Link
-          href="/"
-          className="text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          All Chains
-        </Link>
         <SignedOut>
           <Button variant="outline" size="sm">
             <SignInButton />
           </Button>
         </SignedOut>
         <SignedIn>
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            All Trees
+          </Link>
           <OrganizationSwitcher
             hidePersonal
             afterCreateOrganizationUrl="/"
