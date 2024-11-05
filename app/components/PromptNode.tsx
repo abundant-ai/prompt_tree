@@ -33,9 +33,11 @@ import { PromptNode as PromptNodeType } from "../types/types";
 import { NodeSheet } from "./NodeSheet";
 import { Playground } from "./playground/Playground";
 
-interface PromptNodeProps extends PromptNodeType {
+interface PromptNodeProps {
+  data: PromptNodeType & {
+    onImprove?: () => void;
+  };
   isLoading?: boolean;
-  onImprove?: () => void;
   onDeleteNode?: () => void;
   onUpdatePrompt?: (text: string) => void;
   selected?: boolean;
@@ -43,24 +45,30 @@ interface PromptNodeProps extends PromptNodeType {
 
 function PromptNode(props: PromptNodeProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [editedText, setEditedText] = useState(props.text);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
-  const [feedback, setFeedback] = useState(props.feedback);
+  const [isImproving, setIsImproving] = useState(false);
+  const [feedback, setFeedback] = useState(props.data.feedback);
   const {
     isLoading,
-    onImprove,
     onDeleteNode,
     onUpdatePrompt,
     selected,
+    data,
     ...nodeData
   } = props;
-
+  
   const handleNodeClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("button")) {
       return;
     }
     setIsExpanded(true);
+  };
+
+  const handleImprove = () => {
+    setIsImproving(true);
+    data.onImprove?.();
+    setIsImproving(false);
   };
 
   return (
@@ -84,7 +92,7 @@ function PromptNode(props: PromptNodeProps) {
             </Button>
           </div>
           <CardContent className="p-6">
-          {(nodeData.reasoning && nodeData.reasoning.length > 0) && (
+          {(data.reasoning && data.reasoning.length > 0) && (
             <Collapsible
               open={expandedSections.includes("reasoning")}
               onOpenChange={() => {
@@ -105,11 +113,11 @@ function PromptNode(props: PromptNodeProps) {
                   )}
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  {nodeData.reasoning && (
+                  {data.reasoning && (
                     <div className="mb-4">
                       <h5 className="font-medium mb-2">Reasoning</h5>
                       <p className="text-muted-foreground whitespace-pre-wrap">
-                        {nodeData.reasoning}
+                        {data.reasoning}
                       </p>
                     </div>
                   )}
@@ -123,7 +131,7 @@ function PromptNode(props: PromptNodeProps) {
             </h2>
             <div>
               <p className="whitespace-pre-wrap text-base leading-relaxed">
-                {nodeData.text}
+                {data.text}
               </p>
             </div>
             <div className="mt-4 space-y-4">
@@ -132,11 +140,11 @@ function PromptNode(props: PromptNodeProps) {
                 Run
               </h2>
               <div className="border-t pt-4">
-                <Playground prompt={nodeData.text} />
+                <Playground prompt={data.text} />
               </div>
               <h2 className="text-lg font-semibold mb-4 flex items-center">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">3</span>
-                Generate
+                Improve
               </h2>
               <h4 className="font-semibold">Feedback</h4>
               <div className="space-y-2">
@@ -153,11 +161,11 @@ function PromptNode(props: PromptNodeProps) {
               </div>
 
               <Button
-                onClick={onImprove}
-                disabled={isLoading || !feedback?.length}
+                onClick={handleImprove}
+                disabled={isLoading || !feedback?.length || isImproving}
                 className="w-full"
               >
-                {isLoading ? "Improving..." : "Improve →"}
+                {isImproving ? "Improving..." : "Improve →"}
               </Button>
             </div>
           </CardContent>
@@ -167,8 +175,8 @@ function PromptNode(props: PromptNodeProps) {
 
       <NodeSheet
         node={{
-          id: nodeData.id,
-          data: nodeData,
+          id: data.id,
+          data,
           position: { x: 0, y: 0 },
           type: "promptNode",
         }}

@@ -10,6 +10,8 @@ export interface PromptNode {
   reasoning: string;
   createdAt: Date;
   feedback: string;
+  changes: Change[];
+  analysis: string;
 }
 
 export interface PromptFlowNode {

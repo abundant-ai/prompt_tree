@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
@@ -36,14 +36,6 @@ export function NodeSheet({
 
   if (!node) return null;
 
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(section)
-        ? prev.filter((s) => s !== section)
-        : [...prev, section]
-    );
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
@@ -57,61 +49,78 @@ export function NodeSheet({
           <div className="space-y-6 p-6">
             {/* Prompt Section */}
             <Card>
-              <CardHeader>
-                <CardTitle>Prompt</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="whitespace-pre-wrap text-sm">{node.data.text}</p>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">1</span>
+                  Prompt
+                </h2>
+                <p className="whitespace-pre-wrap text-base leading-relaxed">
+                  {node.data.text}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Test Section */}
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">2</span>
+                  Run
+                </h2>
+                <div className="border-t pt-4">
+                  <Playground prompt={node.data.text} />
+                </div>
               </CardContent>
             </Card>
 
             {/* Feedback Section */}
             <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Feedback</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">3</span>
+                  Improve
+                </h2>
                 {node.data.feedback && (
-                  <p className="whitespace-pre-wrap text-sm">
-                    {node.data.feedback}
-                  </p>
+                  <>
+                    <h4 className="font-semibold">Feedback</h4>
+                    <p className="whitespace-pre-wrap text-base leading-relaxed mt-2">
+                      {node.data.feedback}
+                    </p>
+                  </>
                 )}
               </CardContent>
             </Card>
 
-            {/* Playground Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Test Prompt</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Playground prompt={node.data.text} />
-              </CardContent>
-            </Card>
-
-            {/* Analysis Section - Collapsible */}
+            {/* Reasoning Section */}
             {node.data.reasoning && (
-              <Collapsible>
+              <Collapsible
+                open={expandedSections.includes("reasoning")}
+                onOpenChange={() => {
+                  setExpandedSections((prev) =>
+                    prev.includes("reasoning")
+                      ? prev.filter((s) => s !== "reasoning")
+                      : [...prev, "reasoning"]
+                  );
+                }}
+              >
                 <Card>
-                  <CardHeader className="cursor-pointer">
-                    <CollapsibleTrigger className="flex items-center justify-between w-full">
-                      <CardTitle>Reasoning</CardTitle>
-                      {expandedSections.includes("reasoning") ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </CollapsibleTrigger>
-                  </CardHeader>
-                  <CollapsibleContent>
-                    <CardContent>
-                      <p className="whitespace-pre-wrap text-sm">
-                        {node.data.reasoning}
-                      </p>
-                    </CardContent>
-                  </CollapsibleContent>
+                  <CardContent className="p-6">
+                    <div className="border-t pt-4">
+                      <CollapsibleTrigger className="flex items-center justify-between w-full">
+                        <h2 className="font-semibold">Reasoning</h2>
+                        {expandedSections.includes("reasoning") ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <p className="text-muted-foreground whitespace-pre-wrap mt-4">
+                          {node.data.reasoning}
+                        </p>
+                      </CollapsibleContent>
+                    </div>
+                  </CardContent>
                 </Card>
               </Collapsible>
             )}

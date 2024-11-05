@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { ChainNode, DBEdge as Edge, SaveChainParams } from "@/lib/db";
 import { prisma } from "@/lib/prisma";
-import { SaveChainParams, ChainNode, DBEdge as Edge } from "@/lib/db";
-import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
   try {
@@ -27,20 +27,23 @@ export async function POST(request: Request) {
     });
 
     // Second pass: Create nodes with updated parent references
-    const nodesWithNewIds = chainData.nodes.map((node) => ({
+    const nodesWithNewIds = chainData.nodes.map((node) => (
+      {
       id: idMapping[node.id],
       type: node.type || "promptNode",
       parentId: node.data.parentId ? idMapping[node.data.parentId] : null,
       position: JSON.stringify(node.position),
       text: node.data.text,
       analysis: node.data.analysis,
-      changes: JSON.stringify(node.data.changes),
-      feedback: JSON.stringify(node.data.feedback),
+      changes: JSON.stringify(node.data.changes) || "[]",
+      feedback: JSON.stringify(node.data.feedback) || "",
       createdAt: node.data.createdAt,
       userId,
       orgId,
-    }));
+    }
+  ));
 
+    console.log(nodesWithNewIds);
     // Update edges with new IDs
     const edgesWithNewIds = chainData.edges.map((edge) => ({
       id: uuidv4(),

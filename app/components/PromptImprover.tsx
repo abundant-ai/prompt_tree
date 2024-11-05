@@ -499,6 +499,8 @@ export default function PromptImprover({
           reasoning: "",
           parentId: null,
           createdAt: new Date(),
+          changes: [],
+          analysis: "",
         },
       };
       setNodes([newNode]);
