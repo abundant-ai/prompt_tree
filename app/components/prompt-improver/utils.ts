@@ -1,6 +1,6 @@
-import { Node, Edge } from "reactflow";
-import dagre from "dagre";
 import { PromptNode } from "@/app/types/types";
+import dagre from "dagre";
+import { Edge, Node } from "reactflow";
 
 // Adjusted dimensions and spacing
 export const NODE_WIDTH = 600; // Much wider for better text display

@@ -1,46 +1,37 @@
 "use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PromptNode as PromptNodeType } from "../types/types";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { Node } from "reactflow";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PromptNode as PromptNodeType } from "../types/types";
 import { Playground } from "./playground/Playground";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Textarea } from "@/components/ui/textarea";
 
 interface NodeSheetProps {
   node: Node<PromptNodeType> | null;
   onClose: () => void;
-  onAddFeedback?: () => void;
-  onUpdateFeedback?: (feedbackId: string, text: string) => void;
-  onRemoveFeedback?: (feedbackId: string) => void;
-  onUpdatePrompt?: (text: string) => void;
-  inheritedFeedback?: { id: string; text: string }[];
-  isLoading?: boolean;
   isOpen?: boolean;
 }
 
 export function NodeSheet({
   node,
   onClose,
-  onAddFeedback,
-  onUpdateFeedback,
-  onRemoveFeedback,
-  inheritedFeedback = [],
-  isLoading,
   isOpen = false,
 }: NodeSheetProps) {
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+
   if (!node) return null;
 
   return (
@@ -56,99 +47,80 @@ export function NodeSheet({
           <div className="space-y-6 p-6">
             {/* Prompt Section */}
             <Card>
-              <CardHeader>
-                <CardTitle>Prompt</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="whitespace-pre-wrap text-sm">{node.data.text}</p>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">1</span>
+                  Prompt
+                </h2>
+                <p className="whitespace-pre-wrap text-base leading-relaxed">
+                  {node.data.text}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Test Section */}
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">2</span>
+                  Run
+                </h2>
+                <div className="border-t pt-4">
+                  <Playground prompt={node.data.text} />
+                </div>
               </CardContent>
             </Card>
 
             {/* Feedback Section */}
             <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Feedback</CardTitle>
-                  {onAddFeedback && (
-                    <Button
-                      onClick={onAddFeedback}
-                      disabled={isLoading}
-                      size="sm"
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Add Feedback
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                {inheritedFeedback.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-muted-foreground">
-                      Inherited Feedback
-                    </h4>
-                    {inheritedFeedback.map((feedback) => (
-                      <Card key={feedback.id}>
-                        <CardContent className="p-3">
-                          <p className="text-sm text-muted-foreground">
-                            {feedback.text}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-                {node.data.feedback && node.data.feedback.length > 0 && (
-                  <div className="space-y-2">
-                    {node.data.feedback.map((feedback) => (
-                      <Card key={feedback.id}>
-                        <CardContent className="p-3">
-                          {onUpdateFeedback ? (
-                            <div className="flex gap-3">
-                              <Textarea
-                                className="flex-1 min-h-[5rem]"
-                                placeholder="Enter your feedback"
-                                value={feedback.text}
-                                onChange={(e) =>
-                                  onUpdateFeedback(feedback.id, e.target.value)
-                                }
-                                disabled={isLoading}
-                              />
-                              {onRemoveFeedback && (
-                                <Button
-                                  variant="destructive"
-                                  size="icon"
-                                  onClick={() => onRemoveFeedback(feedback.id)}
-                                  disabled={isLoading}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                  <span className="sr-only">
-                                    Remove feedback
-                                  </span>
-                                </Button>
-                              )}
-                            </div>
-                          ) : (
-                            <p className="text-sm">{feedback.text}</p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-sm mr-2">3</span>
+                  Improve
+                </h2>
+                {node.data.feedback && (
+                  <>
+                    <h4 className="font-semibold">Feedback</h4>
+                    <p className="whitespace-pre-wrap text-base leading-relaxed mt-2">
+                      {node.data.feedback}
+                    </p>
+                  </>
                 )}
               </CardContent>
             </Card>
-
-            {/* Playground Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Test Prompt</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Playground prompt={node.data.text} />
-              </CardContent>
-            </Card>
-
+            {/* Reasoning Section */}
+            {node.data.reasoning && (
+              <Collapsible
+                open={expandedSections.includes("reasoning")}
+                onOpenChange={() => {
+                  setExpandedSections((prev) =>
+                    prev.includes("reasoning")
+                      ? prev.filter((s) => s !== "reasoning")
+                      : [...prev, "reasoning"]
+                  );
+                }}
+              >
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="border-t pt-4">
+                      <CollapsibleTrigger className="flex items-center justify-between w-full">
+                        <h2 className="font-semibold">Reasoning</h2>
+                        {expandedSections.includes("reasoning") ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <p className="text-muted-foreground whitespace-pre-wrap mt-4">
+                          {node.data.reasoning}
+                        </p>
+                      </CollapsibleContent>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Collapsible>
+            )}
             {/* Analysis Section - Collapsible */}
             {node.data.analysis && (
               <Collapsible>
@@ -168,7 +140,6 @@ export function NodeSheet({
                 </Card>
               </Collapsible>
             )}
-
             {/* Changes Section - Collapsible */}
             {node.data.changes.length > 0 && (
               <Collapsible>

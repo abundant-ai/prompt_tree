@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Node" ALTER COLUMN "changes" DROP NOT NULL,
+ALTER COLUMN "feedback" DROP NOT NULL;

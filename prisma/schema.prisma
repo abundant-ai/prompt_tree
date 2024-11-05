@@ -28,8 +28,8 @@ model Node {
     position  Json // {x: number, y: number}
     text      String
     analysis  String?
-    changes   Json // Change[]
-    feedback  Json // Feedback[]
+    changes   Json? // Change[]
+    feedback  Json? // Feedback[]
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
     userId    String

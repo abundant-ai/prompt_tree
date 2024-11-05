@@ -12,10 +12,11 @@ export interface PromptNode {
   id: string;
   parentId: string | null;
   text: string;
-  analysis: string;
-  changes: Change[];
+  reasoning: string;
   createdAt: Date;
-  feedback: Feedback[];
+  feedback: string;
+  changes: Change[];
+  analysis: string;
 }
 
 export interface PromptFlowNode {

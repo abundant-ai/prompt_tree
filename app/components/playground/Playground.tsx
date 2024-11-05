@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -15,19 +15,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
 import {
-  PlayCircle,
-  Settings,
   ChevronDown,
   ChevronRight,
-  Sparkles,
-  Zap,
-  ThermometerSun,
   Hash,
+  PlayCircle,
+  Settings,
+  Sparkles,
   StopCircle,
-  RotateCcw,
+  ThermometerSun,
+  Zap
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface PlaygroundProps {
@@ -49,7 +48,7 @@ const models = [
 ];
 
 export function Playground({ prompt }: PlaygroundProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [selectedModel, setSelectedModel] = useState(models[0].id);
   const [response, setResponse] = useState("");
@@ -103,17 +102,6 @@ export function Playground({ prompt }: PlaygroundProps) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleReset = () => {
-    setResponse("");
-    setModelParams({
-      temperature: 0.7,
-      maxTokens: 1000,
-      topP: 1,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-    });
   };
 
   return (
@@ -214,9 +202,9 @@ export function Playground({ prompt }: PlaygroundProps) {
               </>
             )}
           </Button>
-          <Button variant="outline" onClick={handleReset}>
+          {/* <Button variant="outline" onClick={handleReset}>
             <RotateCcw className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </div>
 
         {response && (
