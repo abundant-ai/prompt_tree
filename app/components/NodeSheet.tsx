@@ -17,6 +17,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Node } from "reactflow";
 import { PromptNode as PromptNodeType } from "../types/types";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Playground } from "./playground/Playground";
 
 interface NodeSheetProps {
@@ -30,8 +31,6 @@ export function NodeSheet({
   onClose,
   isOpen = false,
 }: NodeSheetProps) {
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
-
   if (!node) return null;
 
   return (
@@ -88,7 +87,6 @@ export function NodeSheet({
                 )}
               </CardContent>
             </Card>
-
             {/* Reasoning Section */}
             {node.data.reasoning && (
               <Collapsible
@@ -119,6 +117,54 @@ export function NodeSheet({
                       </CollapsibleContent>
                     </div>
                   </CardContent>
+                </Card>
+              </Collapsible>
+            {/* Analysis Section - Collapsible */}
+            {node.data.analysis && (
+              <Collapsible>
+                <Card>
+                  <CardHeader className="cursor-pointer">
+                    <CollapsibleTrigger className="flex items-center justify-between w-full">
+                      <CardTitle>Analysis</CardTitle>
+                    </CollapsibleTrigger>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent>
+                      <p className="whitespace-pre-wrap text-sm">
+                        {node.data.analysis}
+                      </p>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            )}
+            {/* Changes Section - Collapsible */}
+            {node.data.changes.length > 0 && (
+              <Collapsible>
+                <Card>
+                  <CardHeader className="cursor-pointer">
+                    <CollapsibleTrigger className="flex items-center justify-between w-full">
+                      <CardTitle>Changes</CardTitle>
+                    </CollapsibleTrigger>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {node.data.changes.map((change, index) => (
+                          <li key={index} className="text-sm">
+                            <span className="font-medium">
+                              {change.description}
+                            </span>
+                            {change.rationale && (
+                              <p className="text-muted-foreground mt-1">
+                                {change.rationale}
+                              </p>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </CollapsibleContent>
                 </Card>
               </Collapsible>
             )}
