@@ -30,9 +30,9 @@ export function NodeSheet({
   onClose,
   isOpen = false,
 }: NodeSheetProps) {
-  if (!node) return null;
-
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
+
+  if (!node) return null;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
